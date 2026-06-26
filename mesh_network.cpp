@@ -140,6 +140,8 @@ void receivedCallback(uint32_t from, String &msg) {
   // Check if it's a resolve message
   if (doc.containsKey("resolve")) {
     uint32_t alertId = doc["resolve"];
+    uint32_t resolvingNodeId = doc.containsKey("nodeId") ? doc["nodeId"].as<uint32_t>() : from;
+    uint32_t timestamp = doc.containsKey("timestamp") ? doc["timestamp"].as<uint32_t>() : (millis() / 1000);
     Serial.print("Resolve message received for alert ID: ");
     Serial.println(alertId);
     
@@ -151,7 +153,7 @@ void receivedCallback(uint32_t from, String &msg) {
       hardwareManager.playShortBeep();
       
       // Publish the resolve to the MQTT cloud (root node only)
-      mqttCloud.publishResolve(alertId);
+      mqttCloud.publishResolve(alertId, resolvingNodeId, timestamp);
     }
     return;
   }
@@ -237,10 +239,12 @@ void broadcastAlert(const Alert& alert) {
   sendAlertToMesh(alert);
 }
 
-void broadcastResolve(uint32_t alertId) {
+void broadcastResolve(uint32_t alertId, uint32_t nodeId, uint32_t timestamp) {
   // Create a resolve message
-  StaticJsonDocument<128> doc;
+  StaticJsonDocument<256> doc;
   doc["resolve"] = alertId;
+  doc["nodeId"] = nodeId;
+  doc["timestamp"] = timestamp;
   
   String json;
   serializeJson(doc, json);

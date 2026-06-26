@@ -106,11 +106,13 @@ void MQTTCloud::publishAlert(const Alert& alert) {
   }
 }
 
-void MQTTCloud::publishResolve(uint32_t alertId) {
+void MQTTCloud::publishResolve(uint32_t alertId, uint32_t nodeId, uint32_t timestamp) {
   if (!mqttClient.connected()) return;
   
-  StaticJsonDocument<128> doc;
+  StaticJsonDocument<256> doc;
   doc["alertId"] = alertId;
+  doc["nodeId"] = nodeId;
+  doc["timestamp"] = timestamp;
   doc["status"] = "resolved";
   
   String json;
@@ -129,6 +131,6 @@ void MQTTCloud::begin() {
 }
 void MQTTCloud::loop() {}
 void MQTTCloud::publishAlert(const Alert& alert) {}
-void MQTTCloud::publishResolve(uint32_t alertId) {}
+void MQTTCloud::publishResolve(uint32_t alertId, uint32_t nodeId, uint32_t timestamp) {}
 
 #endif

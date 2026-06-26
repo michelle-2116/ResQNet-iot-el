@@ -33,7 +33,7 @@ void nodeTimeAdjustedCallback(int32_t offset);
 // Mesh operations
 void sendAlertToMesh(const Alert& alert);
 void broadcastAlert(const Alert& alert);
-void broadcastResolve(uint32_t alertId);
+void broadcastResolve(uint32_t alertId, uint32_t nodeId, uint32_t timestamp);
 
 // Root node detection
 bool findRoot(const painlessmesh::protocol::NodeTree& tree, uint32_t& rootId);

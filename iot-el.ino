@@ -269,15 +269,17 @@ void handleAlertListInput(char key) {
     
     if (alertPtr != nullptr && alertPtr->status == ALERT_ACTIVE) {
       uint32_t alertId = alertPtr->alertId;
+      uint32_t resolvingNodeId = mesh.getNodeId();
+      uint32_t timestamp = millis() / 1000;
       
       // Resolve locally
       alertManager.resolveAlert(currentIndex);
       
       // Broadcast resolve to mesh network
-      broadcastResolve(alertId);
+      broadcastResolve(alertId, resolvingNodeId, timestamp);
       
       // Publish resolve to MQTT cloud (root node only)
-      mqttCloud.publishResolve(alertId);
+      mqttCloud.publishResolve(alertId, resolvingNodeId, timestamp);
       
       Serial.print("Alert resolved and broadcasted: ID ");
       Serial.println(alertId);

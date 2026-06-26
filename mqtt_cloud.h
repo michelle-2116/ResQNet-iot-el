@@ -22,7 +22,7 @@ public:
   void begin();
   void loop();
   void publishAlert(const Alert& alert);
-  void publishResolve(uint32_t alertId);
+  void publishResolve(uint32_t alertId, uint32_t nodeId, uint32_t timestamp);
   
 private:
   #if IS_ROOT_NODE == 1
